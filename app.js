@@ -1,14 +1,23 @@
-// Imports
+// Imports & Settings
 
 
 // Initializing Express
 const express = require("express")
 const app = express()
+const path = require("path")
 // Requiring model
 const Campground = require("./models/campground")
 // Add different request types
 const methodOverride = require("method-override")
-
+// Registering a template engine
+const ejsMate = require("ejs-mate")
+// Require error wrapping function
+const catchAsync = require("./utils/catchAsync")
+// Import error class
+const ExpressError = require("./utils/ExpressError")
+// Joi  schema
+// We have to destructure because module.exports.campgroundSchema is an object property
+const {campgroundSchema} = require("./joiSchemas.js")
 
 
 // Requiring and connecting Mongoose
@@ -21,16 +30,29 @@ async function main() {
 }
 
 
+// Middleware
+
+
 // Setting a derictory for the application's views and a default engine to use
-const path = require("path")
 app.set("views", path.join(__dirname, "views"))
 app.set("view engine", "ejs")
-
-
-// Import ability to extracting form data (parse req.body)
+// Registering a template engine
+app.engine("ejs", ejsMate)
+// Import ability to extract form data (parse req.body)
 app.use(express.urlencoded({ extended: true }))
 // Add different request types
 app.use(methodOverride("_method"))
+
+
+const validateCampground = (req, res, next) => {
+    // Call validation method and pass "req.body"
+    const {error} = campgroundSchema.validate(req.body)
+
+    if (error) {
+        const msg = error.details.map(el => el.message).join(",")
+        throw new ExpressError(msg, 400)
+    } else {next()}
+}
 
 
 // View routes
@@ -42,52 +64,75 @@ app.get("/", (req, res) => {
 })
 
 
-// New. It HAS to be above all "/:id" routes to work
-// Render form
+// New // Render form // It HAS to be above all "/:id" routes to work 
 app.get("/campgrounds/new", (req, res) => {
     res.render("campgrounds/new")
 })
 // Create
-app.post("/campgrounds", async (req, res) => {
-    // .campground because form names are "campground[title]...", i.e. we store form names in additional object
+// We add Middleware to route handlers by adding it as an argument after the route.
+// catchAsync takes function as argument, runs it with ".catch(next)" and returns it 
+app.post("/campgrounds", validateCampground, catchAsync(async (req, res, next) => {
+    // try{
+    // // .campground because form names are "campground[title]...", i.e. we store form names in additional object
+    // if(!req.body.campground) throw new ExpressError("Invalid Campground Data", 400)
+    
+    // Mongoose code
     const newCampground = new Campground(req.body.campground)
     await newCampground.save()
     res.redirect(`/campgrounds/${newCampground._id}`)
-})
+}))
+    // } catch(e){
+    //     // Whe we catch error, "next" calls the Error Handling middleware defined below, right before "app.listen"
+    //     next(e)
+    // }
 
 
-// Show all 
-app.get("/campgrounds", async (req, res) => {
+// Show all // Read
+app.get("/campgrounds", catchAsync( async (req, res) => {
     const campgrounds = await Campground.find({})
     res.render("campgrounds/index", { campgrounds })
-})
+}))
 // Show one 
-app.get("/campgrounds/:id", async (req, res) => {
+app.get("/campgrounds/:id", catchAsync( async (req, res) => {
     const campground = await Campground.findById(req.params.id)
     res.render("campgrounds/show", { campground })
-})
+}))
 
 
-// Edit
-// Render form
-app.get("/campgrounds/:id/edit", async (req, res) => {
+// Edit // Render form
+app.get("/campgrounds/:id/edit", catchAsync( async (req, res) => {
     const campground = await Campground.findById(req.params.id)
     res.render("campgrounds/edit", { campground })
-})
+}))
 // Update
-app.put("/campgrounds/:id/", async (req, res) => {
+app.put("/campgrounds/:id/", validateCampground, catchAsync( async (req, res) => {
     const { id } = req.params
     // .campground because form names are "campground[title]...", i.e. we store form names in additional object
     const updatedCampground = await Campground.findByIdAndUpdate(id, { ...req.body.campground })
     res.redirect(`/campgrounds/${updatedCampground._id}`)
-})
+}))
 
 
 // Delete
-app.delete("/campgrounds/:id/delete", async (req, res) => {
+app.delete("/campgrounds/:id/delete", catchAsync( async (req, res) => {
     await Campground.findByIdAndDelete(req.params.id)
     res.redirect("/campgrounds")
+}))
+
+
+// This will run ABSOLUTELY every time. Check for invalid routes.
+app.all("*", (req, res, next) => {
+    // Whatever arg is passed to "next(arg)" is passed to Error Handling Middleware as 1st arg, i.e. "err".
+   next(new ExpressError("Page Not Found!!!", 404))
 })
+
+
+// Error handling
+app.use((err, req, res, next) => {
+    const { statusCode = 500 } = err
+    if(!err.message) err.message = "Oh NO! Something went TERRIBLY WROOOOONG!!!"
+    res.status(statusCode).render("error", { err })
+}) 
 
 
 // Starting server
