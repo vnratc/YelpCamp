@@ -1,5 +1,6 @@
 const mongoose = require("mongoose")
 const Schema = mongoose.Schema
+const Review = require("./review")
 
 const CampgroundSchema = new Schema({
     title: String,
@@ -13,6 +14,22 @@ const CampgroundSchema = new Schema({
             ref: "Review"
         }
     ]
+})
+
+
+// DELETING ALL RELATED REVIEWS. REFER TO MONGOOSE DOCS TO KNOW WHAT TO PASS IN "" DOUBLE QUOTES, diferent function trigger diferent ".post" middleware
+CampgroundSchema.post("findOneAndDelete", async function (doc) {
+    // WDB
+    if (doc) {
+        await Review.deleteMany({ _id: { $in: doc.reviews }})
+    }
+    // vnratc
+    // if (doc.reviews.length) {
+    //     for (let review of doc.reviews) {
+    //         let res = await Review.findByIdAndDelete(review)
+    //         console.log(res)
+    //     }
+    // }
 })
 
 
