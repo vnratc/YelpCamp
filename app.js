@@ -7,9 +7,15 @@ const session = require("express-session")
 const flash = require("connect-flash")
 const ExpressError = require("./utils/ExpressError") // Error class
 const methodOverride = require("method-override") // Different request types
+const passport = require("passport")
+const LocalStrategy = require("passport-local")
+const User = require("./models/user")
 
-const campgrounds = require("./routes/campgrounds") // Routes
-const reviews = require("./routes/reviews")
+
+const campgroundsRoutes = require("./routes/campgrounds") // Routes
+const reviewRoutes = require("./routes/reviews")
+const userRoutes = require("./routes/users")
+
 
 main()
     .then(() => console.log("Mongoose connection Open"))
@@ -26,6 +32,7 @@ app.use(express.urlencoded({ extended: true })) // Import ability to extract for
 app.use(methodOverride("_method")) // Add different request types
 app.use(express.static(path.join(__dirname, "public"))) // Static files. __dirname is required to be able run "nodemon app.js" from any working directory
 
+
 const sessionConfig = {
     secret: "thisshouldbeabettersecret",
     resave: false,
@@ -36,7 +43,18 @@ const sessionConfig = {
         httpOnly: true
     }
 }
-app.use(session(sessionConfig))
+app.use(session(sessionConfig)) // This must be before passport.session
+
+
+app.use(passport.initialize())
+app.use(passport.session()) // This must be after session()
+passport.use(new LocalStrategy(User.authenticate()))
+
+
+passport.serializeUser(User.serializeUser())
+passport.deserializeUser(User.deserializeUser())
+
+
 app.use(flash())
 app.use((req, res, next) => { // THIS MUST BE BEFORE ROUTES
     res.locals.success = req.flash("success") // .success is array that's available in templates
@@ -44,8 +62,11 @@ app.use((req, res, next) => { // THIS MUST BE BEFORE ROUTES
     next()
 })
 
-app.use("/campgrounds", campgrounds) // Routes. For :id to work we need to set 
-app.use("/campgrounds/:id/reviews", reviews)
+
+app.use("/campgrounds", campgroundsRoutes) // Routes. For :id to work we need to set 
+app.use("/campgrounds/:id/reviews", reviewRoutes)
+app.use("/", userRoutes)
+
 
 // Home page
 app.get("/", (req, res) => {
@@ -74,3 +95,9 @@ app.use((err, req, res, next) => {
 app.listen(3000, () => {
     console.log("Listening on port 3000")
 })
+
+
+
+
+
+

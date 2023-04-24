@@ -1,15 +1,11 @@
 const express = require("express")
-// { mergeParams: true } is for params be available in this file
-const router = express.Router({ mergeParams: true })
-// Error wrapping function
-const catchAsync = require("../utils/catchAsync")
-// Error class
-const ExpressError = require("../utils/ExpressError")
-// Models
-const Campground = require("../models/campground")
+const router = express.Router({ mergeParams: true }) // { mergeParams: true } is for params be available in "app.js" file
+const catchAsync = require("../utils/catchAsync") // Error wrapping function
+const ExpressError = require("../utils/ExpressError") // Error class
+const Campground = require("../models/campground") // Models
 const Review = require("../models/review")
-// Joi  schema. We have to destructure because module.exports.campgroundValidationSchema is an object property
-const { campgroundValidationSchema } = require("../joiSchemas.js")
+const { campgroundValidationSchema } = require("../joiSchemas.js") // Joi  schema. We have to destructure because module.exports.campgroundValidationSchema is an object property
+const { isLoggedIn } = require("../middleware.js")
 
 
 // Form Validations
@@ -26,14 +22,14 @@ const validateCampground = (req, res, next) => {
 
 // Create
 // Form // It HAS to be above all "/:id" routes to work 
-router.get("/new", (req, res) => {
+router.get("/new", isLoggedIn, (req, res) => {
     res.render("campgrounds/new")
 })
 // We add Middleware to route handlers by adding it as an argument after the route.
 // catchAsync takes function as argument, runs it with ".catch(next)" and returns it 
 
 // New 
-router.post("/", validateCampground, catchAsync(async (req, res, next) => {
+router.post("/", isLoggedIn, validateCampground, catchAsync(async (req, res, next) => {
     // try{
     // // .campground because form names are "campground[title]...", i.e. we store form names in additional object
     // if(!req.body.campground) throw new ExpressError("Invalid Campground Data", 400)
@@ -65,7 +61,7 @@ router.get("/:id", catchAsync(async (req, res) => {
 
 
 // Update// Render form
-router.get("/:id/edit", catchAsync(async (req, res) => {
+router.get("/:id/edit", isLoggedIn, catchAsync(async (req, res) => {
     const campground = await Campground.findById(req.params.id)
     if (!campground) {
         req.flash("error", "Can not find that campground")
@@ -74,7 +70,7 @@ router.get("/:id/edit", catchAsync(async (req, res) => {
     res.render("campgrounds/edit", { campground })
 }))
 // Edit 
-router.put("/:id/", validateCampground, catchAsync(async (req, res) => {
+router.put("/:id/", isLoggedIn, validateCampground, catchAsync(async (req, res) => {
     const { id } = req.params
     // .campground because form names are "campground[title]...", i.e. we store form names in additional object
     const updatedCampground = await Campground.findByIdAndUpdate(id, { ...req.body.campground })
@@ -84,7 +80,7 @@ router.put("/:id/", validateCampground, catchAsync(async (req, res) => {
 
 
 // Delete
-router.delete("/:id/delete", catchAsync(async (req, res) => {
+router.delete("/:id/delete", isLoggedIn, catchAsync(async (req, res) => {
     await Campground.findByIdAndDelete(req.params.id)
     req.flash("success", "Campground was deleted")
     res.redirect("/campgrounds")
