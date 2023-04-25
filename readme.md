@@ -2,7 +2,7 @@
 ## Description
 ### Summary
 
-Yelp Camp is the final project for "Web Developer Bootcamp 2023" course by Udemy and Colt Steele. It utilizes all the skills tought in the course like: 
+Yelp Camp is the final project for "Web Developer Bootcamp 2023" course by Udemy and Colt Steele. It is built using Express framework and utilizes all the skills tought in the course: 
 - HTML5
 - CSS3
 - Flexbox
