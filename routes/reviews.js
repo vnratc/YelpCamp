@@ -1,15 +1,10 @@
 const express = require("express")
-// { mergeParams: true } is for params be available in this file
-const router = express.Router({ mergeParams: true })
-// Error wrapping function
-const catchAsync = require("../utils/catchAsync")
-// Error class
-const ExpressError = require("../utils/ExpressError")
-// Models
-const Campground = require("../models/campground")
+const router = express.Router({ mergeParams: true }) // { mergeParams: true } is for params be available in this file
+const catchAsync = require("../utils/catchAsync") // Error wrapping function
+const ExpressError = require("../utils/ExpressError") // Error class
+const Campground = require("../models/campground") // Models
 const Review = require("../models/review")
-// Joi  schema. We have to destructure because module.exports.campgroundValidationSchema is an object property
-const { reviewValidationSchema } = require("../joiSchemas.js")
+const { reviewValidationSchema } = require("../joiSchemas.js") // Joi schema. We have to destructure because module.exports.campgroundValidationSchema is an object property
 
 
 // Form Validations

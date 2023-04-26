@@ -1,0 +1,7 @@
+<li class="list-group-item text-secondary text-end">Author: <%= campground.author.username %></li>   
+
+<% if (campground.author.username === currentUser.username) { %>
+
+<% } %>
+
+<% if (currentUser && campground.author.username === currentUser.username) { %>

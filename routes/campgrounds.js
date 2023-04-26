@@ -3,6 +3,7 @@ const router = express.Router({ mergeParams: true }) // { mergeParams: true } is
 const catchAsync = require("../utils/catchAsync") // Error wrapping function
 const ExpressError = require("../utils/ExpressError") // Error class
 const Campground = require("../models/campground") // Models
+const User = require("../models/user") // Models
 const Review = require("../models/review")
 const { campgroundValidationSchema } = require("../joiSchemas.js") // Joi  schema. We have to destructure because module.exports.campgroundValidationSchema is an object property
 const { isLoggedIn } = require("../middleware.js")
@@ -34,6 +35,7 @@ router.post("/", isLoggedIn, validateCampground, catchAsync(async (req, res, nex
     // // .campground because form names are "campground[title]...", i.e. we store form names in additional object
     // if(!req.body.campground) throw new ExpressError("Invalid Campground Data", 400)
     const newCampground = new Campground(req.body.campground)
+    newCampground.author = req.user._id
     await newCampground.save()
     req.flash("success", "Successfully created a new campground")
     res.redirect(`/campgrounds/${newCampground._id}`)
@@ -51,7 +53,8 @@ router.get("/", catchAsync(async (req, res) => {
 }))
 // Show one 
 router.get("/:id", catchAsync(async (req, res) => {
-    const campground = await Campground.findById(req.params.id).populate("reviews")
+    const campground = await Campground.findById(req.params.id).populate("reviews").populate("author")
+    // console.log("author: "+campground.author)
     if (!campground) {
         req.flash("error", "Can not find that campground")
         return res.redirect("/campgrounds")
@@ -81,6 +84,8 @@ router.put("/:id/", isLoggedIn, validateCampground, catchAsync(async (req, res) 
 
 // Delete
 router.delete("/:id/delete", isLoggedIn, catchAsync(async (req, res) => {
+    const author = await User.findById(req.params.id)
+    console.log(author)
     await Campground.findByIdAndDelete(req.params.id)
     req.flash("success", "Campground was deleted")
     res.redirect("/campgrounds")
