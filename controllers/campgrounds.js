@@ -38,7 +38,13 @@ module.exports.showCampground = async (req, res) => {
         req.flash("error", "Can not find that campground")
         return res.redirect("/campgrounds")
     }
-    res.render("campgrounds/show", { campground })
+    // Calculate average rating
+    let total = 0
+    for (let review of campground.reviews) {
+        total = total + review.rating
+    }
+    const average = Math.round(total / campground.reviews.length)
+    res.render("campgrounds/show", { campground, average })
 }
 
 

@@ -59,7 +59,7 @@ app.use(flash())
 
 
 app.use((req, res, next) => { // THIS MUST BE BEFORE ROUTES
-    // console.log(req.session)
+    // console.log(req.path)
     res.locals.currentUser = req.user
     res.locals.success = req.flash("success") // .success is array that's available in templates
     res.locals.error = req.flash("error") // "res.locals" property sets variables accessible in templates rendered with res.render. The variables set on res.locals are available within a single request-response cycle
