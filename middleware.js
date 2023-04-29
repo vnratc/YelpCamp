@@ -51,7 +51,7 @@ module.exports.isCampAuthor = async (req, res, next) => {
     const { id } = req.params
     const campground = await Campground.findById(id)
     if (!campground.author.equals(req.user._id)) {
-        req.flash("error", "Not Authorized to delete this campground")
+        req.flash("error", "Not Authorized to edit this campground")
         return res.redirect(`/campgrounds/${id}`)
     }
     next()

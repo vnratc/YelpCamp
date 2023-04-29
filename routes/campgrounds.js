@@ -9,11 +9,14 @@ const campgrounds = require("../controllers/campgrounds")
 
 
 router.route("/")
-    .post(  // Create new CG
-    isLoggedIn,
-    validateCampground,
-    catchAsync(campgrounds.createCampground))
-    .get(catchAsync(campgrounds.index)) // Read, Show all 
+    // .post(  // Create new CG
+    // isLoggedIn,
+    // validateCampground,
+    // catchAsync(campgrounds.createCampground))
+    // .get(catchAsync(campgrounds.index)) // Read, Show all
+    .post((req, res) => {
+        res.send(req.body)
+    })
 
 
 // Create // Form // It HAS to be above all "/:id" routes to work

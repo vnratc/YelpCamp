@@ -62,7 +62,7 @@ module.exports.updateCampground = async (req, res) => {
     const { id } = req.params
     // .campground because form names are "campground[title]...", i.e. we store form names in additional object
     const updatedCampground = await Campground.findByIdAndUpdate(id, { ...req.body.campground })
-    req.flash("success", "Successfully updated the campground")
+    req.flash("success", "Campground was successfully updated")
     res.redirect(`/campgrounds/${updatedCampground._id}`)
 }
 

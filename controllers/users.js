@@ -30,7 +30,7 @@ module.exports.renderLoginForm = (req, res) => {
 
 
 module.exports.login = (req, res) => {
-    req.flash("success", "Welcome back!")
+    req.flash("success", `Welcome back, ${req.user.username}`)
     const redirectUrl = res.locals.returnTo || "/campgrounds"
     res.redirect(redirectUrl)
 }
