@@ -15,7 +15,14 @@ const campgrounds = require("../controllers/campgrounds")
 
 // Multer - middleware to process uploaded files using "enctype="multipart/form-data"".
 const multer  = require('multer')
-const upload = multer({ dest: 'uploads/' })
+
+// Former place to store images locally
+// const upload = multer({ dest: 'uploads/' })
+
+// Import instance of CloudinaryStorage. It automatically is looking for index file, no need to type its name.
+const { storage } = require("../cloudinary")
+// New place to store images in cloudinary.
+const upload = multer({ storage })
 
 
 // This is similar "urls.py" in Django "path("login", views.login_view, name="login")"
@@ -23,14 +30,16 @@ const upload = multer({ dest: 'uploads/' })
 
 router.route("/")
     .get(catchAsync(campgrounds.index)) // Read, Show all
-    .post(upload.array("image"), (req, res) => {
-        console.log("trying to create a new campground", req.body, req.files)
-        // res.send("it worked")
-    // .post(  // Create new CG
-    // isLoggedIn,
-    // validateCampground,
-    // catchAsync(campgrounds.createCampground))
-    })
+    .post(  // Create new CG
+    isLoggedIn,
+    upload.array("image"),  // image is the input name in the form to create CG.
+    validateCampground,
+    catchAsync(campgrounds.createCampground))
+
+    // WDB54: practicing uploading files to the cloudinary.
+    // .post(upload.array("image"), (req, res) => {
+    //     console.log(req.body, req.files)
+    // })
 
 
 // Create // Form // It HAS to be above all "/:id" routes to work

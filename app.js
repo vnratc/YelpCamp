@@ -1,9 +1,7 @@
-// ADD variables from ".env" file to "process.env".
+// Add variables from ".env" file to "process.env".
 if (process.env.NODE_ENV !== "production") {
     require("dotenv").config()
 }
-console.log(process.env.SECRET)
-console.log(process.env.API_KEY)
 
 // Express
 const express = require("express")

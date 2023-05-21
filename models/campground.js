@@ -8,7 +8,12 @@ const user = require("./user")
 
 const CampgroundSchema = new Schema({
     title: String,
-    image: String,
+    images: [  // It used to be a "image: String,", now it's an Array of obj.
+        {
+            url: String,
+            filename: String
+        }
+    ],
     price: Number,
     description: String,
     location: String,
@@ -29,7 +34,7 @@ const CampgroundSchema = new Schema({
 CampgroundSchema.post("findOneAndDelete", async function (doc) {
     // WDB
     if (doc) {
-        await Review.deleteMany({ _id: { $in: doc.reviews }})
+        await Review.deleteMany({ _id: { $in: doc.reviews } })
     }
     // vnratc
     // if (doc.reviews.length) {
