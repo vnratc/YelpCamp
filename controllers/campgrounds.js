@@ -2,6 +2,9 @@ const campground = require("../models/campground")
 const Campground = require("../models/campground")
 
 
+// This is like "views.py" in Django where all the logic is wrtitten.
+
+
 // Index
 module.exports.index = async (req, res) => {
     const campgrounds = await Campground.find({})

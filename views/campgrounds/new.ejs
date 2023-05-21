@@ -17,7 +17,11 @@
                     Looks good!
                 </div>
             </div>
-            <input type="file" name="image" id="">
+
+            <!-- Input for image uploading. "multiple" allows to upload more than 1 file at once. -->
+            <input type="file" name="image" id="" multiple>
+
+            <!-- Former URL input. -->
             <!-- <div class="mb-3">
                 <label class="form-label" for="image">Image URL</label>
                 <input class="form-control" type="text" id="image" name="campground[image]" required>
@@ -25,6 +29,7 @@
                     Looks good!
                 </div>
             </div> -->
+
             <div class="mb-3">
                 <label class="form-label" for="description">Description</label>
                 <textarea class="form-control" type="text" id="description" name="campground[description]" required></textarea>

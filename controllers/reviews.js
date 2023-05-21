@@ -2,6 +2,9 @@ const Campground = require("../models/campground") // Models
 const Review = require("../models/review")
 
 
+// This is like "views.py" in Django where all the logic is wrtitten.
+
+
 module.exports.createReview = async (req, res) => {
     const review = new Review(req.body.review)
     review.author = req.user._id

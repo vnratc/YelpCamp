@@ -1,38 +1,70 @@
-const express = require("express") // Express
+// ADD variables from ".env" file to "process.env".
+if (process.env.NODE_ENV !== "production") {
+    require("dotenv").config()
+}
+console.log(process.env.SECRET)
+console.log(process.env.API_KEY)
+
+// Express
+const express = require("express")
 const app = express()
+
 const path = require("path")
 const mongoose = require("mongoose")
-const ejsMate = require("ejs-mate") // Template engine
+
+// Template engine
+const ejsMate = require("ejs-mate") 
 const session = require("express-session")
 const flash = require("connect-flash")
-const ExpressError = require("./utils/ExpressError") // Error class
-const methodOverride = require("method-override") // Different request types
+
+// Error class
+const ExpressError = require("./utils/ExpressError") 
+
+// Different request types
+const methodOverride = require("method-override") 
+
 const passport = require("passport")
 const LocalStrategy = require("passport-local")
 const User = require("./models/user")
 
 
-const campgroundsRoutes = require("./routes/campgrounds") // Routes
+// Import routes.
+const campgroundsRoutes = require("./routes/campgrounds")
 const reviewRoutes = require("./routes/reviews")
 const userRoutes = require("./routes/users")
 
 
+// Connect Mongoose database.
 main()
     .then(() => console.log("Mongoose connection Open"))
     .catch(err => console.log("Mongoose connection Error", err))
 async function main() {
+
+    // "true" prevents information that is not in schema fields from being saved to the database, "false" allows it.
+    mongoose.set('strictQuery', true)
+
     await mongoose.connect("mongodb://127.0.0.1:27017/yelp-camp")
 }
 
 
-app.set("views", path.join(__dirname, "views")) // Setting a derictory for the application's views and a default engine to use
+// Set a derictory for the application's views and a default engine to use.
+app.set("views", path.join(__dirname, "views")) 
 app.set("view engine", "ejs")
-app.engine("ejs", ejsMate) // Registering a template engine
-app.use(express.urlencoded({ extended: true })) // Import ability to extract form data (parse req.body)
-app.use(methodOverride("_method")) // Add different request types
-app.use(express.static(path.join(__dirname, "public"))) // Static files. __dirname is required to be able run "nodemon app.js" from any working directory
+
+// Register template engine.
+app.engine("ejs", ejsMate) 
+
+// Import ability to extract form data (parse req.body)
+app.use(express.urlencoded({ extended: true })) 
+
+// Add different request types
+app.use(methodOverride("_method")) 
+
+// Static files. __dirname is required to be able run "nodemon app.js" from any working directory
+app.use(express.static(path.join(__dirname, "public"))) 
 
 
+// Use session.
 const sessionConfig = {
     secret: "thisshouldbeabettersecret",
     resave: false,
@@ -46,28 +78,36 @@ const sessionConfig = {
 app.use(session(sessionConfig)) // This must be before passport.session
 
 
+// Use passport.
 app.use(passport.initialize())
 app.use(passport.session()) // This must be after session()
 passport.use(new LocalStrategy(User.authenticate()))
-
 
 passport.serializeUser(User.serializeUser())
 passport.deserializeUser(User.deserializeUser())
 
 
+// Use flash.
 app.use(flash())
 
 
+// Use local variables.
 app.use((req, res, next) => { // THIS MUST BE BEFORE ROUTES
-    // console.log(req.path)
+    
+    // .currentUser is now available in templates.
     res.locals.currentUser = req.user
-    res.locals.success = req.flash("success") // .success is array that's available in templates
-    res.locals.error = req.flash("error") // "res.locals" property sets variables accessible in templates rendered with res.render. The variables set on res.locals are available within a single request-response cycle
+
+    // .success is array that's available in templates
+    res.locals.success = req.flash("success") 
+
+    // "res.locals" property sets variables accessible in templates rendered with res.render. The variables set on res.locals are available within a single request-response cycle.
+    res.locals.error = req.flash("error") 
     next()
 })
 
 
-app.use("/campgrounds", campgroundsRoutes) // Routes. For :id to work we need to set 
+// Use routes.
+app.use("/campgrounds", campgroundsRoutes) // For :id to work we need to set 
 app.use("/campgrounds/:id/reviews", reviewRoutes)
 app.use("/", userRoutes)
 

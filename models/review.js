@@ -1,3 +1,6 @@
+// This is similar to "models.py" in Django
+
+
 const { string } = require("joi")
 const mongoose = require("mongoose")
 const Schema = mongoose.Schema

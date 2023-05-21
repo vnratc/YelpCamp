@@ -1,3 +1,6 @@
+// This is similar to "models.py" in Django
+
+
 const mongoose = require("mongoose")
 const Schema = mongoose.Schema
 const Review = require("./review")

@@ -1,6 +1,9 @@
 const User = require("../models/user")
 
 
+// This is like "views.py" in Django where all the logic is wrtitten.
+
+
 module.exports.renderRegisterForm = (req, res) => {
     res.render("users/register")
 }

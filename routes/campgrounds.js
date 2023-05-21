@@ -1,21 +1,35 @@
+// Express.
 const express = require("express")
-const router = express.Router({ mergeParams: true }) // { mergeParams: true } is for params be available in "app.js" file
-const catchAsync = require("../utils/catchAsync") // Error wrapping function. // catchAsync takes function as argument, runs it with ".catch(next)" and returns it INSTEAD OF TRY / CATCH (see leftovers in controllers)
+
+// { mergeParams: true } is for params be available in "app.js" file.
+const router = express.Router({ mergeParams: true }) 
+
+// Error wrapping function. // catchAsync takes function as argument, runs it with ".catch(next)" and returns it INSTEAD OF TRY / CATCH (see leftovers in controllers).
+const catchAsync = require("../utils/catchAsync") 
+
+// Middleware to check and validate.
 const { isLoggedIn, isCampAuthor, validateCampground } = require("../middleware.js")
+
+// Controllers.
 const campgrounds = require("../controllers/campgrounds")
 
+// Multer - middleware to process uploaded files using "enctype="multipart/form-data"".
+const multer  = require('multer')
+const upload = multer({ dest: 'uploads/' })
 
-// This is similar to Django urls.py "path("login", views.login_view, name="login")"
+
+// This is similar "urls.py" in Django "path("login", views.login_view, name="login")"
 
 
 router.route("/")
+    .get(catchAsync(campgrounds.index)) // Read, Show all
+    .post(upload.array("image"), (req, res) => {
+        console.log("trying to create a new campground", req.body, req.files)
+        // res.send("it worked")
     // .post(  // Create new CG
     // isLoggedIn,
     // validateCampground,
     // catchAsync(campgrounds.createCampground))
-    // .get(catchAsync(campgrounds.index)) // Read, Show all
-    .post((req, res) => {
-        res.send(req.body)
     })
 
 
