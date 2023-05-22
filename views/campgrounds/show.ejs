@@ -9,13 +9,17 @@
         <!-- Images carousel. -->
         <div id="campgroundCarousel" class="carousel slide" data-bs-ride="carousel">
           <div class="carousel-inner">
-            <% campground.images.forEach((image, i) => { %>
 
-              <!-- Give class "active" to the very first image in the array for carousel to work properly. -->
-              <div class="carousel-item <%= i === 0 ? "active" : "" %>">
-                <img src=" <%= image.url %>" class="card-img-top d-block w-100" alt="">
-              </div>
-            <% }) %>
+            <!-- If there are images in the campground. -->
+            <% if (campground.images.length) { %>    
+              <% campground.images.forEach((image, i) => { %>
+
+                <!-- Give class "active" to the very first image in the array for carousel to work properly. -->
+                <div class="carousel-item <%= i === 0 ? "active" : "" %>">
+                  <img src=" <%= image.url %>" class="card-img-top d-block w-100" alt="">
+                </div>
+              <% }) %>
+            <% } %>
   
           </div>
 
@@ -45,7 +49,8 @@
           </p>
 
           <!-- Submitted by -->
-          <div class="text-secondary text-end">Submitted by: <%= campground.author.username %>
+          <div class="text-secondary text-end">
+            Submitted by: <%= campground.author.username %>
           </div>
         </div>
 
@@ -70,16 +75,18 @@
               <button class="btn btn-danger">Delete</button>
             </form>
           </div>
-          <% } %>
+        <% } %>
 
-          <div class="card-footer text-body-secondary">
-            <a href="/campgrounds">Back to All Campgrounds</a>
-          </div>
+        <div class="card-footer text-body-secondary">
+          <a href="/campgrounds">Back to All Campgrounds</a>
+        </div>
       </div>
     </div>
 
     <!-- Review & Rating -->
     <div class="my-5 col-lg-6 col-12">
+
+      <!-- If any user is logged-in. -->
       <% if (currentUser) { %>
         <h2 class="text-center mb-4">Leave a Review</h2>
         <form class="mb-5 validated-form" action="/campgrounds/<%=campground._id%>/reviews" method="POST" novalidate>
@@ -114,7 +121,7 @@
         </form>
       <% } %>
 
-      <!-- If any reviews exist. -->
+      <!-- If reviews exist. -->
       <% if (campground.reviews.length) { %>
         
         <!-- Reviews heading and Overal Rating. -->
@@ -135,7 +142,7 @@
               <p class="card-text"><%=review.body%></p>
               <div class="text-secondary text-end">Posted by: <%= review.author.username %></div>
 
-              <!-- If logged in user is the Review author. -->
+              <!-- If logged-in user is the Review author. -->
               <% if (currentUser && review.author.equals(currentUser)) { %>
                 <form class="text-end" action="/campgrounds/<%=campground._id%>/reviews/<%=review._id%>?_method=DELETE" method="POST">
                   

@@ -6,14 +6,26 @@ const Schema = mongoose.Schema
 const Review = require("./review")
 const user = require("./user")
 
+
+// ImageSchema.
+const ImageSchema = new Schema({
+    url: String,
+    filename: String
+})
+
+
+// WE USE "virtual" because we DON'T NEED TO STORE this altered url in the db.
+// Edit the image url by adding width to the image according to the cloudinary docs.
+ImageSchema.virtual("thumbnail").get(function() {
+    // "this" refers to a particular image.
+    return this.url.replace("/upload", "/upload/w_200")
+})
+
+
+// CG Schema.
 const CampgroundSchema = new Schema({
     title: String,
-    images: [  // It used to be a "image: String,", now it's an Array of obj.
-        {
-            url: String,
-            filename: String
-        }
-    ],
+    images: [ImageSchema],  // It used to be a "image: String," when we just used url address, now it's an Array of image schemas.
     price: Number,
     description: String,
     location: String,

@@ -3,6 +3,9 @@
 (() => {
     'use strict'
 
+    // DEPRICATED. Was fixed in the newer Bootstrap version. Dynamic file input with no dependencies.
+    // bsCustomFileInput.init()
+
     // Fetch all the forms we want to apply custom Bootstrap validation styles to
     const forms = document.querySelectorAll('.validated-form')
 

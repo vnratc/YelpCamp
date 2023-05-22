@@ -3,6 +3,8 @@
     <h1 class="text-center">Create New Campground</h1>
     <div class="col-6 offset-3">
       <form action="/campgrounds" method="POST" novalidate class="validated-form" enctype="multipart/form-data">
+
+        <!-- Title. -->
         <div class="mb-3">
           <label class="form-label" for="title">Title</label>
           <input autofocus class="form-control" type="text" id="title" name="campground[title]" required>
@@ -10,7 +12,9 @@
             Looks good!
           </div>
         </div>
-        <div class="mb-3">
+
+        <!-- Location. -->
+        <div class="mb-4">
           <label class="form-label" for="location">Location</label>
           <input class="form-control" type="text" id="location" name="campground[location]" required>
           <div class="valid-feedback">
@@ -19,7 +23,10 @@
         </div>
 
         <!-- Input for image uploading. "multiple" allows to upload more than 1 file at once. -->
-        <input type="file" name="image" id="" multiple>
+        <div class="input-group mb-3">
+          <input type="file" name="image" id="image" multiple class="form-control" id="inputGroupFile02">
+          <label class="input-group-text" for="inputGroupFile02">Upload images</label>
+        </div>
 
         <!-- Former URL input. -->
         <!-- <div class="mb-3">
@@ -29,7 +36,8 @@
                     Looks good!
                 </div>
             </div> -->
-
+        
+        <!-- Description. -->
         <div class="mb-3">
           <label class="form-label" for="description">Description</label>
           <textarea class="form-control" type="text" id="description" name="campground[description]" required></textarea>
@@ -37,6 +45,8 @@
             Looks good!
           </div>
         </div>
+
+        <!-- Price. -->
         <div class="mb-3">
           <label class="form-label" for="price">Campground Price</label>
           <div class="input-group">
@@ -47,9 +57,13 @@
             </div>
           </div>
         </div>
+
+        <!-- Add CG button. -->
         <div class="mb-3">
           <button class="btn btn-success">Add Campground</button>
         </div>
+
+        <!-- Link to all CGs. -->
         <a href="/campgrounds">All Campgrounds</a>
       </form>
     </div>

@@ -3,22 +3,22 @@ if (process.env.NODE_ENV !== "production") {
     require("dotenv").config()
 }
 
-// Express
+// Express.
 const express = require("express")
 const app = express()
 
 const path = require("path")
 const mongoose = require("mongoose")
 
-// Template engine
+// Template engine.
 const ejsMate = require("ejs-mate") 
 const session = require("express-session")
 const flash = require("connect-flash")
 
-// Error class
+// Error class.
 const ExpressError = require("./utils/ExpressError") 
 
-// Different request types
+// Different request types.
 const methodOverride = require("method-override") 
 
 const passport = require("passport")
@@ -110,7 +110,7 @@ app.use("/campgrounds/:id/reviews", reviewRoutes)
 app.use("/", userRoutes)
 
 
-// Home page
+// Home page.
 app.get("/", (req, res) => {
     res.render("home")
 })
@@ -123,7 +123,7 @@ app.all("*", (req, res, next) => {
 })
 
 
-// Error handling
+// Error handling.
 app.use((err, req, res, next) => {
     const { statusCode = 500 } = err
     if (!err.message) err.message = "Oh NO! Something went TERRIBLY WROOOOONG!!!"
@@ -133,7 +133,7 @@ app.use((err, req, res, next) => {
 })
 
 
-// Starting server
+// Start server.
 app.listen(3000, () => {
     console.log("Listening on port 3000")
 })
