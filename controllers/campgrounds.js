@@ -65,6 +65,8 @@ module.exports.showCampground = async (req, res) => {
       }
     })
 
+  if (campground.geometry.coordinates.length) console.log(campground.geometry)
+
   if (!campground) {
     req.flash("error", "Can not find that campground")
     return res.redirect("/campgrounds")
@@ -93,10 +95,28 @@ module.exports.renderEditForm = async (req, res) => {
 
 // Update CG.
 module.exports.updateCampground = async (req, res) => {
+
+  // Get the campground id from the request.
   const { id } = req.params
+
+  // Convert query to coordinates (Forward geocoding: location name => coordinates).
+  const geoData = await geocoder.forwardGeocode({
+    query: req.body.campground.location,
+    limit: 1
+  }).send()
+
+  // Show error if Mapbox couldn't find valid location based on the form input.
+  // console.log(geoData.body.features[0])
+  if (!geoData.body.features[0]) {
+    req.flash("error", "Invalid Location")
+    return res.redirect(`/campgrounds/${id}`)
+  }
 
   // ".campground" because form names are "campground[title]...", i.e. we store form names in additional object.
   const updatedCampground = await Campground.findByIdAndUpdate(id, { ...req.body.campground })
+
+  // Add geoJSON to newCampground.
+  updatedCampground.geometry = geoData.body.features[0].geometry
 
   // Add newly uploaded images form "req.files" to the exsting "images" array.
   const uploadedImages = req.files.map(f => ({ url: f.path, filename: f.filename }))
