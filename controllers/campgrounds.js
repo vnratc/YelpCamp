@@ -1,5 +1,13 @@
+// Campground Model.
 const Campground = require("../models/campground")
+
+// Cloudinary.
 const { cloudinary } = require("../cloudinary")
+
+// Import Mapbox and its token from .env
+const mbxGeocoding = require("@mapbox/mapbox-sdk/services/geocoding")
+const mapBoxToken = process.env.MAPBOX_TOKEN
+const geocoder = mbxGeocoding({ accessToken: mapBoxToken })
 
 
 // This is like "views.py" in Django where all the logic is wrtitten.
@@ -20,13 +28,26 @@ module.exports.renderNewForm = (req, res) => {
 
 // Create new CG.
 module.exports.createCampground = async (req, res, next) => {
+
+  // Convert query to coordinates (Forward geocoding: name => coordinates).
+  const geoData = await geocoder.forwardGeocode({
+    query: req.body.campground.location,
+    limit: 1
+  }).send()
+
+  // Get data from form inputs.
   const newCampground = new Campground(req.body.campground)
+
+  // Add geoJSON to newCampground.
+  newCampground.geometry = geoData.body.features[0].geometry
 
   // Add url and filename to the created campground.
   newCampground.images = req.files.map(f => ({ url: f.path, filename: f.filename }))
 
+  // Add author and save changes.
   newCampground.author = req.user._id
   await newCampground.save()
+  
   console.log(newCampground)
   req.flash("success", "Successfully created a new campground")
   res.redirect(`/campgrounds/${newCampground._id}`)
@@ -90,10 +111,10 @@ module.exports.updateCampground = async (req, res) => {
     for (let filename of req.body.deleteImages) {
       await cloudinary.uploader.destroy(filename)
     }
-  
-  // Delete from Mongo.
-  await updatedCampground.updateOne({ $pull: { images: { filename: { $in: req.body.deleteImages } } } })  // $pull is the Mongo operator(see docs https://www.mongodb.com/docs/manual/reference/operator/update/pull/).
-  console.log(updatedCampground)
+
+    // Delete from Mongo.
+    await updatedCampground.updateOne({ $pull: { images: { filename: { $in: req.body.deleteImages } } } })  // $pull is the Mongo operator(see docs https://www.mongodb.com/docs/manual/reference/operator/update/pull/).
+    console.log(updatedCampground)
   }
 
   req.flash("success", "Campground was successfully updated")
