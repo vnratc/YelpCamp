@@ -65,7 +65,7 @@ module.exports.showCampground = async (req, res) => {
       }
     })
 
-  if (campground.geometry.coordinates.length) console.log(campground.geometry)
+  // if (campground.geometry.coordinates.length) console.log(campground.geometry)
 
   if (!campground) {
     req.flash("error", "Can not find that campground")

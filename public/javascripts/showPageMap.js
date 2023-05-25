@@ -22,9 +22,14 @@ const map = new mapboxgl.Map({
 
 
 // Set marker with options.
-const marker = new mapboxgl.Marker({
-  color: "#FFFFFF",
-  draggable: false
-}).setLngLat(coordinates.length ? coordinates : [0, 0])
+const marker = new mapboxgl.Marker()
+  .setLngLat(coordinates.length ? coordinates : [0, 0])
+  .setPopup(
+    new mapboxgl.Popup({ offset: 25})
+      .setHTML(
+        `<h4>${cg.title}</h4><p>${cg.location}</p>`
+      )
+  )
   .addTo(map);
 // }
+

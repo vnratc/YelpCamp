@@ -3,8 +3,8 @@
   <div class="row">
     
     <!-- Campground card -->
-    <!-- If no user logged-in, center the card. Otherwise move it left and leave space on the right for reviews. -->
-    <div class="<%= currentUser ? 'col-lg-6' : 'col' %>"> 
+    <!-- If no user logged-in and no reviews, center the card. Otherwise move it left and leave space on the right for reviews. -->
+    <div class="<%= currentUser || campground.reviews.length ? 'col-lg-6' : 'col-12' %>"> 
       <div class="card my-5">
 
         <!-- Images carousel -->
@@ -60,10 +60,13 @@
           <!-- Location -->
           <li class="list-group-item text-secondary">Location: <%= campground.location %></li>
 
+          
         <!-- If campground has coordinates, show Mapbox div. -->
-        <% if (campground.geometry.coordinates.length) { %>
-        <div id='map' style='width: auto; height: 20rem;'></div>
-        <% } %>
+        <div id='map' 
+          style='width: auto; height: 20rem;
+            display: <%= campground.geometry.coordinates.length ? 'block' : 'none' %>;'>
+        </div>
+        
           <!-- Price -->
           <li class="list-group-item">Price: $ <%= campground.price %> / night</li>
         </ul>
@@ -89,7 +92,8 @@
     </div>
 
     <!-- Review & Rating -->
-    <div class="my-5 col-lg-6 col-12">
+    <!-- If no user logged-in and no reviews, center the card. Otherwise move it left and leave space on the right for reviews. -->
+    <div class="<%= currentUser || campground.reviews.length ? 'col-lg-6' : '' %>"> 
 
       <!-- If any user is logged-in. -->
       <% if (currentUser) { %>

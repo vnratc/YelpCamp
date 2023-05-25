@@ -1,4 +1,9 @@
 <% layout("layouts/boilerplate") %>
+
+  <!-- Cluster map -->
+  <div id="map" style="width: 100%; height: 500px"></div>
+
+  <!-- Campgrounds list -->
   <h1>All Campgrounds</h1>
   <% for (let campground of campgrounds) { %>
     <div class="card mb-3">
@@ -8,6 +13,8 @@
           <!-- Images, if there are images in the campground. -->
           <% if (campground.images.length) { %>
             <img class="img-fluid" src="<%= campground.images[0].url %>" alt="">
+          <% } else {%>
+            <img class="img-fluid" src="https://res.cloudinary.com/drzyxwo23/image/upload/v1682762164/samples/animals/reindeer.jpg" alt="">
           <% } %>
         </div>
 
@@ -41,3 +48,5 @@
       </div>
     </div>
   <% } %>
+
+  <script src="javascripts/clusterMap.js"></script>
