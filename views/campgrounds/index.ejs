@@ -49,4 +49,13 @@
     </div>
   <% } %>
 
-  <script src="javascripts/clusterMap.js"></script>
+
+  <script>
+    // Ejs puts value int ejs tags, and browser then read it from the script tag.
+    // 'Less than percent dash' tag outputs the UNescaped value.
+    // Pass variables to clusterMap.js
+    const mapToken = '<%- process.env.MAPBOX_TOKEN %>';  // '' quotes are used because we need token as STRING.
+    // Conform to the clustermap addSource data structure.
+    const campgrounds = { features: <%- JSON.stringify(campgrounds) %>}
+  </script>
+  <script src="/javascripts/clusterMap.js"></script>

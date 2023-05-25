@@ -174,7 +174,8 @@
     // 'Less than percent dash' tag outputs the UNescaped value.
     const mapToken = '<%- process.env.MAPBOX_TOKEN %>';  // '' quotes are used because we need token as STRING.
     // Need to stringify since objects and their properties can't be read properly.
-    const campground = '<%- JSON.stringify(campground) %>'; // '' quotes are used because we need campground as STRING.
+    const campground = <%- JSON.stringify(campground) %>;
+    console.log(typeof campground)
   </script>
   <!-- Then browser runs showPageMap.js where map instructions are stored. -->
   <script src="/javascripts/showPageMap.js"></script>

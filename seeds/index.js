@@ -29,6 +29,7 @@ const seedDB = async () => {
     // Generate random coordinates.
     const randomLng = () => {
       let lng =Math.floor(Math.random() * 180)
+      // 50 / 50 chance of negative number
       return lng *= Math.round(Math.random()) ? 1 : -1
     }
     const randomLat = () => {
@@ -48,7 +49,11 @@ const seedDB = async () => {
       price,
       geometry: {
         type: 'Point',
-        coordinates: [randomLng(), randomLat()]
+        // coordinates: [randomLng(), randomLat()]
+        coordinates: [
+          cities[random1000].longitude,  // Get coordinates from the city.
+          cities[random1000].latitude
+        ]
       },
       images: [
         {
