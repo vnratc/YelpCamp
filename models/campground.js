@@ -22,6 +22,10 @@ ImageSchema.virtual("thumbnail").get(function () {
 })
 
 
+// Force include virtuals when converting to JSON.
+const opts = { toJSON: { virtuals: true } }
+
+
 // CG Schema.
 const CampgroundSchema = new Schema({
   title: String,
@@ -50,6 +54,15 @@ const CampgroundSchema = new Schema({
       ref: "Review"
     }
   ]
+}, opts)  // Force include virtuals when converting to JSON.
+
+
+// Virtual to add link to the Mapbox popups.
+CampgroundSchema.virtual('properties.popupMarkup').get(function () {
+  // "this" refers to a particular campground.
+  return `
+    <strong><a href="/campgrounds/${this._id}">${this.title}</a></strong>
+    `
 })
 
 

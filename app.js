@@ -6,6 +6,8 @@ if (process.env.NODE_ENV !== "production") {
 // Express.
 const express = require("express")
 const app = express()
+// Prevent MongoDB Operator Injection.
+const mongoSanitize = require('express-mongo-sanitize');
 
 const path = require("path")
 const mongoose = require("mongoose")
@@ -88,10 +90,13 @@ passport.deserializeUser(User.deserializeUser())
 // Use flash.
 app.use(flash())
 
+app.use(mongoSanitize({replaceWith: 'kuku'}))
 
 // Use local variables.
 app.use((req, res, next) => { // THIS MUST BE BEFORE ROUTES
     
+    console.log(req.query)
+
     // .currentUser is now available in templates.
     res.locals.currentUser = req.user
 

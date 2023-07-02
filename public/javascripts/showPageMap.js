@@ -9,7 +9,7 @@ const coordinates = campground.geometry.coordinates
 // Create map if CG has coordinates.
 const map = new mapboxgl.Map({
   container: 'map', // container ID
-  style: 'mapbox://styles/mapbox/streets-v12', // style URL
+  style: 'mapbox://styles/mapbox/light-v11', // style URL
   center: coordinates.length ? coordinates : [0, 0], // starting position [lng, lat]
   zoom: 4, // starting zoom
 });
@@ -26,3 +26,10 @@ const marker = new mapboxgl.Marker()
   )
   .addTo(map);
 
+// Add navigation control
+const nav = new mapboxgl.NavigationControl({
+  showCompas: true,
+  showZoom: true,
+  visualizePitch: true
+})
+map.addControl(nav, "top-right")

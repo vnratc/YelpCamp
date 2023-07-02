@@ -1,26 +1,37 @@
 <% layout("layouts/boilerplate") %>
+
+
 <!-- Everything below will replace "-body" in boilerplate -->
-<div class="row">
-    <div class="col-6 offset-3">
-<h1>Login</h1>
-<form class="validated-form" novalidate action="/login" method="POST">
-    
-            <div class="mb-3">
-                <label class="form-label" for="username">Username</label>
-                <input autofocus class="form-control" type="text" id="username" name="username" required>
-                <div class="valid-feedback">
-                    Looks good!
-                </div>
+<div class="container d-flex justify-content-center align-items-center mb-5">
+  <div class="row">
+    <div class="col-md-6 offset-md-3 col-xl-4 offset-xl-4">
+      <div class="card shadow">
+        <img class="card-img-top" src="https://images.unsplash.com/photo-1526491109672-74740652b963?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxzZWFyY2h8OXx8Y2FtcGdyb3VuZHxlbnwwfHwwfHx8MA%3D%3D&auto=format&fit=crop&w=800&q=60" alt="">
+        <div class="card-body">
+          <h5 class="card-title text-center">Login</h5>
+          <form class="validated-form" novalidate action="/login" method="POST">
+
+          <div class="mb-3">
+            <label class="form-label" for="username">Username</label>
+            <input autofocus class="form-control" type="text" id="username" name="username" required>
+            <div class="valid-feedback">
+              Looks good!
             </div>
-            <div class="mb-3">
-                <label class="form-label" for="password">Password</label>
-                <input class="form-control" type="password" id="password" name="password" required>
-                <div class="valid-feedback">
-                    Looks good!
-                </div>
+          </div>
+          <div class="mb-3">
+            <label class="form-label" for="password">Password</label>
+            <input class="form-control" type="password" id="password" name="password" required>
+            <div class="valid-feedback">
+              Looks good!
             </div>
+          </div>
+
+          <div class="d-grid gap-2">
             <button class="btn btn-success">Login</button>
-            
+          </div>
         </form>
+        </div>
+      </div>
     </div>
+  </div>
 </div>
