@@ -95,7 +95,7 @@ app.use(mongoSanitize({replaceWith: 'kuku'}))
 // Use local variables.
 app.use((req, res, next) => { // THIS MUST BE BEFORE ROUTES
     
-    console.log(req.query)
+    // console.log(req.query)
 
     // .currentUser is now available in templates.
     res.locals.currentUser = req.user
