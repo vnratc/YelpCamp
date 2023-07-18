@@ -17,7 +17,7 @@
 
                 <!-- Give class "active" to the very first image in the array for carousel to work properly -->
                 <div class="carousel-item <%= i === 0 ? "active" : "" %>">
-                  <img src=" <%= image.url %>" class="card-img-top d-block w-100" alt="">
+                  <img crossorigin="anonymous" src=" <%= image.url %>" class="card-img-top d-block w-100" alt="">
                 </div>
               <% }) %>
             <% } %>

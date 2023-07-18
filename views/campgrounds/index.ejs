@@ -12,9 +12,9 @@
 
           <!-- Images, if there are images in the campground. -->
           <% if (campground.images.length) { %>
-            <img class="img-fluid" src="<%= campground.images[0].url %>" alt="">
+            <img crossorigin="anonymous" class="img-fluid" src="<%= campground.images[0].url %>" alt="">
           <% } else {%>
-            <img class="img-fluid" src="https://res.cloudinary.com/drzyxwo23/image/upload/v1682762164/samples/animals/reindeer.jpg" alt="">
+            <img crossorigin="anonymous" class="img-fluid" src="https://res.cloudinary.com/drzyxwo23/image/upload/v1682762164/samples/animals/reindeer.jpg" alt="">
           <% } %>
         </div>
 
