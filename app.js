@@ -19,8 +19,8 @@ const session = require("express-session")
 const flash = require("connect-flash")
 
 // MongoDB Atlas
-const dbUrl = "mongodb://127.0.0.1:27017/yelp-camp"
-// const dbUrl = process.env.DB_URL
+// const dbUrl = "mongodb://127.0.0.1:27017/yelp-camp"
+const dbUrl = process.env.DB_URL
 
 
 // Storing session in Mongo
